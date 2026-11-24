@@ -1,128 +1,116 @@
-# DeepAI Code 日本語UIパッチ（非公式）
+# DeepAI Code 简体中文界面补丁（非官方）
 
-[DeepAI Code](https://deepai.org/chat/ai-code)（Windows/Mac用デスクトップ・コーディングエージェント）のUIを日本語化する、**非公式のコミュニティパッチ**です。
+把 [DeepAI Code](https://deepai.org/chat/ai-code) 桌面版（Windows / macOS）的英文界面就地替换为简体中文的**社区非官方补丁**。
 
-> **これは何？** DeepAI Codeには言語設定がありません（v0.3.19時点）。このツールは、あなたのPCにインストールされたアプリ内のUI文字列を、日本語辞書で置き換えたアーカイブを生成して差し替えます。アプリ本体の再配布は一切行いません。
+> **这是什么？** DeepAI Code 目前没有内置语言切换。本工具读取你本机已安装应用里的 `server.asar`，用简体中文词典替换其中的英文 UI 文案，重新打包后替换原归档。**不下载、不重新分发任何原始应用文件**，每个用户都在自己的安装上现场构建补丁。
+
+本项目 fork 自 [@TomoyaSasao12 的日语补丁](https://github.com/TomoyaSasao12/deepai-code-ja-patch)，在其工具链和思路基础上编写了简体中文词典与代码补丁。
 
 ---
 
-## 免責事項（必読）
+## 免责声明（务必阅读）
 
-- **非公式**です。DeepAI社とは関係なく、支持も受けていません。
-- インストール済みアプリの `server.asar` を**書き換えます**。適用前に必ず自動バックアップを作成し、`restore` コマンドで元に戻せます。
-- **アプリの自動更新で元に戻ります**。更新が入ったら再度 `apply` を実行してください（新しいバージョンは [versions.json](versions.json) での動作確認が必要です）。
-- 適用は**自己責任**で。何か問題があれば `restore` するか、バックアップを手動で戻してください。
-- DeepAI、DeepAI Codeは各権利者の商標です。
+- **非官方项目**，与 DeepAI 官方无关，也未获其支持。
+- 本工具会**改写已安装应用的 `server.asar`**。执行前会自动备份，`restore` 可还原。
+- **应用自动更新后补丁会失效**，需要重新执行 `apply`（新版本需先在 [versions.json](versions.json) 中确认支持）。
+- 请**完全退出 DeepAI Code（含托盘图标）后**再执行 `apply` / `restore`。
+- 修改应用文件有风险，请自行评估；出问题可用 `restore` 或手动把备份复制回去。
+- DeepAI、DeepAI Code 为各自权利人的商标。
 
-## 対応バージョン
+## 支持版本
 
-| DeepAI Code | 状態 |
-|---|---|
-| 0.3.19 (Windows) | ✅ 動作確認済み |
-| 0.3.20 (Windows) | ✅ 動作確認済み |
-| 0.3.30 (Windows) | ✅ 動作確認済み |
-| 0.3.36 (Windows) | ✅ 動作確認済み |
-| 0.3.37 (Windows) | ✅ 動作確認済み |
-| 0.3.44 (Windows) | ✅ 動作確認済み |
-| 0.3.45 (Windows) | ✅ 動作確認済み |
-| 0.3.50 (Windows) | ✅ 動作確認済み |
-| 0.3.19 (macOS) | 🧪 未検証（コードは対応済み。検証PR歓迎） |
-| Linux版アプリ | 実施不可（公式ダウンロードは現在Windows/Macのみ。将来の提供に備えてCLIは対応済み） |
+| DeepAI Code | 状态 |
+| --- | --- |
+| 0.3.50（Windows） | ✅ 本机实测通过 |
+| 0.3.45 / 0.3.44 / 0.3.37 / 0.3.36 / 0.3.30 / 0.3.20 / 0.3.19 | 上游日语补丁已列出，理论可用（中文词典按 0.3.50 编写，低版本可能有文案对不上） |
+| macOS | 🧪 未验证（代码路径已兼容，欢迎验证 PR） |
+| Linux | 官方目前无 Linux 安装包；CLI 为将来预留了适配 |
 
-新しいバージョンが出たら `versions.json` を更新してPRをお願いします。
+新版本验证后请更新 `versions.json`。
 
-## 使い方
+## 快速开始
 
-要件: Node.js 20以上（依存パッケージなし）。EdgeまたはChromeがあると適用前に起動試験が自動で走ります。
+**环境要求**：Node.js 20+（无第三方依赖）；有 Edge / Chrome 时，`apply` 会自动做一次无头浏览器启动探测，探测不通过不会替换文件。
 
-> **注**: アプリ v0.3.50 以降は `C:\Program Files\DeepAI Code\` にインストールされるため、**`apply` / `restore` は管理者権限の PowerShell から実行してください**（管理者シェルでは起動試験が失敗することがあります）。推奨フロー:
->
-> ```powershell
-> # 1) 通常権限でビルド＋起動試験
-> node bin\patch.mjs build --out .\probe-test.asar
-> node bin\patch.mjs probe --asar .\probe-test.asar
->
-> # 2) 管理者権限で適用（試験済みなので probe をスキップ）
-> node bin\patch.mjs apply --skip-probe
-> ```
+### Windows 双击脚本
 
-```powershell
-# 適用（バックアップ作成 → 差し替え）
-npx deepai-code-ja-patch apply
+仓库提供三个脚本，默认安装目录为 `D:\DeepAI Code`，如不在该路径可把安装目录作为第一个参数传入：
 
-# 元に戻す
-npx deepai-code-ja-patch restore
+| 脚本 | 作用 |
+| --- | --- |
+| `apply-zh-patch.cmd [安装目录]` | 退出检测 → 构建 → 启动探测 → 备份 → 替换 |
+| `restore-zh-patch.cmd [安装目录]` | 从最新备份恢复原版英文界面 |
+| `apply-when-closed.ps1` | 后台等待应用退出后自动 `apply`（日志写入 `apply.log`） |
 
-# 状態確認（インストール先・バージョン・対応可否）
-npx deepai-code-ja-patch status
+> **本 fork 的脚本改动**：原版脚本用应用自带的 `DeepAI Code.exe` 配合 `ELECTRON_RUN_AS_NODE=1` 运行 `patch.mjs`，但 `patch.mjs` 的进程检测会把这个自身进程误判为“应用仍在运行”，导致始终无法打补丁。本仓库的脚本改为调用 PATH 中的独立 `node`（需 20+），规避了该问题。
+
+### 命令行
+
+```bat
+node bin\patch.mjs status  --resources "D:\DeepAI Code\resources"
+node bin\patch.mjs apply   --resources "D:\DeepAI Code\resources"
+node bin\patch.mjs restore --resources "D:\DeepAI Code\resources"
 ```
 
-`apply` の動作:
+`apply` 的执行流程：
 
-1. インストール先を自動検出（見つからない場合は `--resources "C:\...\resources"` で指定）
-2. バージョンが `versions.json` に無ければ**拒否**（`--force`で例外）
-3. すでに適用済みなら、最新バックアップを自動復元してから構築します（手動の `restore` は不要）
-4. DeepAI Codeが起動中なら**拒否**（完全に終了してから再実行）
-5. あなたの `server.asar` からパッチ済みアーカイブを生成し、**全エントリのSHA-256を検証**
-6. **起動試験**（ヘッドレスEdge/ChromeでUIを実際に起動し、JS例外を検査）— **合格するまで一切書き換えません**
-7. バックアップ作成 → 差し替え → ハッシュ照合（不一致なら自動復元）
+1. 自动检测安装路径（找不到时用 `--resources` 指定）
+2. 校验版本是否在 `versions.json` 中（`--force` 可跳过）
+3. 若已打补丁，先自动还原最新备份再重新构建（幂等，无需手动 `restore`）
+4. 检测应用是否在运行，运行中则拒绝执行
+5. 从**你自己的** `server.asar` 构建中文归档，逐条目重算并校验 SHA-256
+6. 无头浏览器启动探测（有 Edge / Chrome 时）：实际拉起 UI 检查 JS 异常，**不通过就不替换**
+7. 备份 → 替换 → 哈希比对，不一致自动回滚
 
-### Linux / macOS について
+常用参数：`--skip-probe` 跳过启动探测，`--force` 忽略版本警告。
 
-- 公式のダウンロードは現在 **Windows / Mac のみ**です。Linux版が提供された場合に備え、CLIはインストール先候補・Chromium検出・プロセスチェックに対応済みです
-- macOS版での動作はまだ検証されていません。動作確認・PRを歓迎します（`restore`で元に戻せます）
-- LinuxではElectronのasar改ざん検証が働かないため、ツールはヒューズ検出時に警告のみ出します
-- Linux/macOSで `/opt` 等への書き込みに権限が必要な場合は `sudo` で実行してください
+开发者命令：
 
-### 開発者向け
-
-```powershell
-node bin/patch.mjs build --asar <server.asar> --out <出力先>   # 適用せず生成のみ
-node bin/patch.mjs build --asar <server.asar> --out <出力先>   # 起動試験つき
+```bat
+node bin\patch.mjs build --out test.asar        REM 只构建，不替换
+node bin\patch.mjs probe --asar test.asar        REM 只对产物做启动探测
 ```
 
-## 仕組み
+## 当前补丁覆盖范围
 
-- UIは `server.asar` 内の `apps/server/dist/client`（React SPA）にあり、英語がミニファイ済みJSに直接埋め込まれています（i18n機構なし）
-- `dictionaries/*.json` のキー（英語の完全一致リテラル）を値（日本語）で置換して再パックします
-- 実行時に生成される文字列（キーバインタイトル等）は `code-patches.json` の**コードパッチ**で対応（`_`始まりの辞書はコードパッチ用データ）
+针对 0.3.50 构建：1938 条替换规则中 1918 条命中，共替换 **3592 处文案**，涉及 90 个文件；另有 15 处代码补丁处理带变量的动态文案（如“在 &lt;编辑器&gt; 中打开”“关闭 &lt;标签页&gt;”）。
 
-### 翻訳方針
+词典分为 20 个文件，覆盖设置页、侧边栏、命令面板、快捷键、配对与设备、审批对话框、远程主机、浏览器预览、主题与外观、用量与诊断等界面。
 
-- 内部タグと衝突する語（`Success` / `Failure` 等、コードが比較に使う語）は翻訳しない
-- キーバインドの WHEN 条件式は**設定値そのもの**なので翻訳しない（下の対応表を参照）
-- 製品名・フォント名・キー名（`SnapShots`、`Arial`、`Enter` 等）は原則原文
+未覆盖部分（保持英文）：
 
-### WHEN 条件式 対応表（訳注）
+- 20 条在本版本未匹配到对应文案的键（多为远程主机 / SSH 页面）
+- 模板中带 `${...}` 且中文语序不同的动态文案（需逐条写 `code-patches.json`）
+- 智能体输出、代码块、仓库文件内容（不属于界面文案，不翻译）
 
-キーバインド設定の「WHEN」列に表示される識別子は設定値そのものです。意味は以下の通り:
+## 工作原理
 
-| 識別子 | 意味 |
-|---|---|
-| `常時`（元表記: `Always`）/ 空欄 | 常に発動 |
-| `terminalFocus` | ターミナルにフォーカスがあるとき |
-| `!terminalFocus` | ターミナルにフォーカスが**ない**とき（`!` = 否定） |
-| `previewFocus` | プレビューにフォーカスがあるとき |
-| `isDesktop` / `isWeb` | デスクトップアプリ / ブラウザー |
+- UI 位于 `server.asar` 内的 `apps/server/dist/client`（React SPA），英文文案直接嵌在压缩后的 JS 里，没有 i18n 机制。
+- `dictionaries/*.json` 以“英文原文 → 简体中文”为键做精确匹配替换后重新打包；编号靠后的文件优先。
+- 运行时才拼出来的字符串（如快捷键标题）由 `code-patches.json` 中的代码补丁处理；`_` 开头的词典是其配套数据。
+- 翻译原则：内部用于逻辑比较的标识（`Success` / `Failure` 等）、快捷键 WHEN 条件表达式、产品名 / 字体名 / 按键名原则上不翻译。
 
-## 既知の制限
+## 与上游日语补丁的区别
 
-- **動的な文章**（`${...}`で名前や数値が挟まれる文）は翻訳できません
-- **サーバー側で定義されるラベル**（思考レベルの `Medium` / `High` 等）は本パッチの対象外です
-- ダブルクォート文字列（バッククォートを含む文）は対象外です
-- 設定画面・主要UIはかなりカバーしていますが、チャット/スレッド画面の一部は未対応です
-- 文言は機械的な完全一致置換のため、文脈によっては不自然な訳があります → PRで改善歓迎
+| 项目 | 上游 ja-patch | 本仓库 zh-patch |
+| --- | --- | --- |
+| 目标语言 | 日语 | 简体中文 |
+| 词典 / 代码补丁 | 日语 | 自行编写的中文词典与补丁 |
+| 启动脚本 | 用 `DeepAI Code.exe` 自运行 Node | 改用独立 `node`，修复自进程检测误报 |
+| 工具链结构 | 相同 | 沿用 |
 
-## 辞書への貢献（PR歓迎）
+## 贡献
 
-1. `dictionaries/*.json` に `"English string": "日本語"` を追加（番号順ファイル、あとのファイルが優先）
-2. **翻訳してはいけない語**に注意（上記の方針参照。誤追加はアプリを壊します）
-3. `node bin/patch.mjs build --asar <server.asar> --out test.asar` で起動試験が通ることを確認してPR
+欢迎 PR 完善翻译：
 
-## ライセンス
+1. 在 `dictionaries/*.json` 增加 `"English string": "简体中文"`（按编号选文件，靠后的优先）
+2. 注意不要翻译上文中提到的“不应翻译的语”
+3. 用 `node bin\patch.mjs build --out test.asar` 确认能正常构建、探测通过后再提交
 
-MIT — 詳細は [LICENSE](LICENSE) を参照。
+## 许可证
 
-## 最後に
+MIT，详见 [LICENSE](LICENSE)。本仓库沿用上游日语补丁的许可证文件。
 
-DeepAI Codeに公式の多言語対応が実装された場合、本リポジトリはアーカイブします。そちらをご利用ください。
+## 最后
+
+如果 DeepAI Code 官方推出了多语言支持，本仓库将归档，届时请改用官方功能。
