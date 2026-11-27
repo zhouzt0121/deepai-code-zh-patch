@@ -1,86 +1,92 @@
 [
 	{
-		"file": "apps/server/dist/client/assets/KeybindingsSettings.logic-B_4jriTa.js",
+		"file": "apps/server/dist/client/assets/KeybindingsSettings.logic-DeUc-z15.js",
 		"find": "function P(e){if(e===`thread.settle`)return`Thread: Archive`;",
-		"replace": "var KB_JA={{KB_JA}};function P(e){if(KB_JA[e]!==void 0)return KB_JA[e];if(e===`thread.settle`)return`Thread: Archive`;",
-		"note": "Insert Japanese title lookup at the head of the keybinding title function (highest priority). {{KB_JA}} is substituted at build time from dictionaries/_keybinding-titles.json. Filename updated for 0.3.20."
+		"replace": "var KB_ZH={{KB_ZH}};function P(e){if(KB_ZH[e]!==void 0)return KB_ZH[e];if(e===`thread.settle`)return`Thread: Archive`;",
+		"note": "把中文快捷键标题查找插到标题函数最前面（最高优先级）。{{KB_ZH}} 在构建时由 dictionaries/_keybinding-titles.json 替换。"
 	},
 	{
-		"file": "apps/server/dist/client/assets/KeybindingsSettings.logic-B_4jriTa.js",
+		"file": "apps/server/dist/client/assets/KeybindingsSettings.logic-DeUc-z15.js",
 		"find": "`Run Script: ${F(r.slice(7,-4))}`",
-		"replace": "`スクリプト実行: ${F(r.slice(7,-4))}`",
-		"note": "Translate the Run Script title prefix (script name itself stays as-is)."
+		"replace": "`运行脚本: ${F(r.slice(7,-4))}`",
+		"note": "翻译“运行脚本”标题前缀（脚本名本身保持不变）。"
 	},
 	{
-		"file": "apps/server/dist/client/assets/settings.keybindings-Bps3baMR.js",
+		"file": "apps/server/dist/client/assets/settings.keybindings-DbHepccB.js",
 		"find": "placeholder:`Always`",
-		"replace": "placeholder:`常時`",
-		"note": "When-clause input placeholder (display only)."
+		"replace": "placeholder:`始终`",
+		"note": "When 条件输入框占位符（仅显示）。"
 	},
 	{
-		"file": "apps/server/dist/client/assets/settings.keybindings-Bps3baMR.js",
+		"file": "apps/server/dist/client/assets/settings.keybindings-DbHepccB.js",
 		"find": "d=r||`Always`",
-		"replace": "d=r||`常時`",
-		"note": "Display fallback for empty when-clause (var is d again in 0.3.36)."
+		"replace": "d=r||`始终`",
+		"note": "空 When 条件的显示回退值。"
 	},
 	{
-		"file": "apps/server/dist/client/assets/ChatMarkdown-dsOoqwrE.js",
-		"find": "Open in ${ji.get(e)??`Editor`}",
-		"replace": "${ji.get(e)??`Editor`}で開く",
-		"note": "Open in <editor name> (helper is Ai again in 0.3.36)."
+		"file": "apps/server/dist/client/assets/settings.keybindings-DbHepccB.js",
+		"find": "let u=`Edit when clause for ${n}`",
+		"replace": "let u=`编辑 ${n} 的 When 条件`",
+		"note": "编辑 When 条件对话框标题。"
 	},
 	{
-		"file": "apps/server/dist/client/assets/main-BrVD79H9.js",
-		"find": "Open in ${vr}",
-		"replace": "${vr}で開く",
-		"note": "Command palette: Open in <editor name> (var br in 0.3.36)."
+		"file": "apps/server/dist/client/assets/ChatMarkdown-BzvDLucI.js",
+		"find": "`Open in ${ji.get(e)??`Editor`}`",
+		"replace": "`在 ${ji.get(e)??`Editor`} 中打开`",
+		"note": "在 <编辑器名> 中打开。"
 	},
 	{
-		"file": "apps/server/dist/client/assets/PreviewPanel-BUy5JR3q.js",
-		"find": "Open in ${ue}'s browser",
-		"replace": "${ue}のブラウザーで開く",
-		"note": "Open in <browser name>'s browser (variable renamed in 0.3.30)."
+		"file": "apps/server/dist/client/assets/main-5u3PPlcA.js",
+		"find": "`Open in ${vr}`",
+		"replace": "`在 ${vr} 中打开`",
+		"note": "命令面板：在 <编辑器名> 中打开。"
 	},
 	{
-		"file": "apps/server/dist/client/assets/settings.projects-CeDCdODU.js",
-		"find": "Open in ${d}",
-		"replace": "${d}で開く",
-		"note": "Projects settings: Open in <editor name>."
+		"file": "apps/server/dist/client/assets/PreviewPanel-5B4lNqI8.js",
+		"find": "`Open in ${ue}'s browser`",
+		"replace": "`在 ${ue} 的浏览器中打开`",
+		"note": "在 <浏览器名> 中打开。"
 	},
 	{
-		"file": "apps/server/dist/client/assets/ThreadRouteView-CKe9ahRQ.js",
-		"find": "Open in ${M?.label??`editor`}",
-		"replace": "${M?.label??`editor`}で開く",
-		"note": "Sidebar: Open in <editor name> (VS Code etc.)."
+		"file": "apps/server/dist/client/assets/PreviewPanel-5B4lNqI8.js",
+		"find": "ve=r?`Stop`:`刷新`",
+		"replace": "ve=r?`停止`:`刷新`",
+		"note": "预览面板的停止/刷新切换。"
 	},
 	{
-		"file": "apps/server/dist/client/assets/WorkspaceTabs-YaQhWYK_.js",
-		"find": "Close ${e.title}",
-		"replace": "${e.title}を閉じる",
-		"note": "Dynamic tab menu: Close <tab title>."
+		"file": "apps/server/dist/client/assets/settings.projects-TNv8kF04.js",
+		"find": "`Open in ${d}`",
+		"replace": "`在 ${d} 中打开`",
+		"note": "项目设置：在 <编辑器名> 中打开。"
 	},
 	{
-		"file": "apps/server/dist/client/assets/WorkspaceTabs-YaQhWYK_.js",
-		"find": "Close ${t.title}",
-		"replace": "${t.title}を閉じる",
-		"note": "Dynamic tab menu variant."
+		"file": "apps/server/dist/client/assets/ThreadRouteView-CL09jcQ2.js",
+		"find": "`Open in ${M?.label??`editor`}`",
+		"replace": "`在 ${M?.label??`editor`} 中打开`",
+		"note": "侧边栏：在 <编辑器名> 中打开。"
 	},
 	{
-		"file": "apps/server/dist/client/assets/ThreadRouteView-CKe9ahRQ.js",
-		"find": "onClick:Lc,children:`Stop`",
+		"file": "apps/server/dist/client/assets/ThreadRouteView-CL09jcQ2.js",
+		"find": "onClick:Nc,children:`Stop`",
 		"replace": "onClick:Nc,children:`停止`",
-		"note": "Stop button label. Bare Stop key is unsafe (mermaid semanticName:`Stop`), so patch this occurrence instead."
+		"note": "停止按钮文案。裸 Stop 键不安全（mermaid 的 semanticName:`Stop`），所以只改这一处。"
 	},
 	{
-		"file": "apps/server/dist/client/assets/ThreadRouteView-CKe9ahRQ.js",
-		"find": "children:a_?`停止中...`:`Stop`",
-		"replace": "children:a_?`停止中...`:`停止`",
-		"note": "Stop/Stopping toggle. Find is post-dictionary text (Stopping... -> 停止中...)."
+		"file": "apps/server/dist/client/assets/ThreadRouteView-CL09jcQ2.js",
+		"find": ":o_?`正在停止...`:`Stop`",
+		"replace": ":o_?`正在停止...`:`停止`",
+		"note": "停止/正在停止切换。查找文本是字典替换后的中文。"
 	},
 	{
-		"file": "apps/server/dist/client/assets/PreviewPanel-BUy5JR3q.js",
-		"find": "ve=r?`Stop`:`更新`",
-		"replace": "ve=r?`停止`:`更新`",
-		"note": "Preview stop/refresh toggle. Find is post-dictionary text (Refresh -> 更新)."
+		"file": "apps/server/dist/client/assets/WorkspaceTabs-DMrdYB6q.js",
+		"find": "`Close ${e.title}`",
+		"replace": "`关闭 ${e.title}`",
+		"note": "动态标签页菜单：关闭 <标签页标题>。"
+	},
+	{
+		"file": "apps/server/dist/client/assets/WorkspaceTabs-DMrdYB6q.js",
+		"find": "`Close ${t.title}`",
+		"replace": "`关闭 ${t.title}`",
+		"note": "动态标签页菜单的另一种写法。"
 	}
 ]
